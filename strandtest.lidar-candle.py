@@ -6,6 +6,9 @@ from array import array
 from random import random
 from dotstar import Adafruit_DotStar
 from lidar_lite import Lidar_Lite
+import os
+import select
+from evdev import InputDevice
 
 lidar = Lidar_Lite()
 connected = lidar.connect(1)
@@ -49,6 +52,11 @@ def showCandle():
     strip.setPixelColor(numpixels - 1 - n, candleBright(e))
   strip.show()
 
+p = select.poll()
+dev = InputDevice('/dev/input/event0')
+
+p.register(dev, select.POLLIN)
+
 
 def moo():
 	d = lidar.getDistance()
@@ -59,7 +67,12 @@ def moo():
 		addEnergy(num)
 	degrade()
 	showCandle()
-
+	
+	events = p.poll(0)
+	if events:
+        	print 'events:', events
+        	data = list(dev.read())
+        	print 'read: %s' % data
 
 while True:                              # Loop forever
 	moo()
