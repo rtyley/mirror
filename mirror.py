@@ -59,6 +59,11 @@ p.register(dev, select.POLLIN)
 
 lit = True
 
+def sweepTo(c):
+  for n in range(0,numpixels):
+    strip.setPixelColor(n, c)
+    strip.show()
+
 def moo():
 	global lit
 	d = lidar.getDistance()
@@ -74,13 +79,13 @@ def moo():
 		if filter(lambda e: e.type == ecodes.EV_KEY and e.value == 1, data):
 			lit = not lit
 			print lit
-			for n in range(0,numpixels):
-				strip.setPixelColor(n, color if lit else 0)
-				strip.show()
+			sweepTo(color if lit else 0)
 
 	if not lit:
 		showCandle()
 			
+
+sweepTo(color)
 
 while True:                              # Loop forever
 	moo()
