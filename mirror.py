@@ -8,7 +8,7 @@ from dotstar import Adafruit_DotStar
 from lidar_lite import Lidar_Lite
 import os
 import select
-from evdev import InputDevice
+from evdev import InputDevice, ecodes
 
 lidar = Lidar_Lite()
 connected = lidar.connect(1)
@@ -57,22 +57,30 @@ dev = InputDevice('/dev/input/event0')
 
 p.register(dev, select.POLLIN)
 
+lit = True
 
 def moo():
+	global lit
 	d = lidar.getDistance()
 	num = d / 1.6
-#	print end-start, d
 
 	if num > 1 and num < (pixelLength):
 		addEnergy(num)
 	degrade()
-	showCandle()
 	
 	events = p.poll(0)
 	if events:
-        	print 'events:', events
         	data = list(dev.read())
-        	print 'read: %s' % data
+		if filter(lambda e: e.type == ecodes.EV_KEY and e.value == 1, data):
+			lit = not lit
+			print lit
+			for n in range(0,numpixels):
+				strip.setPixelColor(n, color if lit else 0)
+				strip.show()
+
+	if not lit:
+		showCandle()
+			
 
 while True:                              # Loop forever
 	moo()
