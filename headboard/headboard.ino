@@ -55,7 +55,7 @@ int32_t gattNotifiableCharId;
 SoftPot left(A0);
 SoftPot right(A1);
 
-uint16_t position = 1;
+uint16_t rpos,lpos = 1;
 
 void setup() {
   while (!Serial);  // required for Flora & Micro
@@ -124,9 +124,8 @@ void setup() {
 }
 
 void loop() {
-  position = left.readPos();
-  Serial.println(left.readPos());Serial.println(right.readPos());
-  // Serial.println(right.readPos());
+  rpos = right.readPos();
+  lpos = left.readPos();
   // delay a bit
     delay(250);
 
@@ -135,7 +134,7 @@ void loop() {
     ble.print( F("AT+GATTCHAR=") );
     ble.print( gattNotifiableCharId );
     ble.print( F(",") );
-    ble.println(position, HEX);
+    ble.println(rpos, HEX);
   
     /* Check if command executed OK */
     if ( !ble.waitForOK() )
