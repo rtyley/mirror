@@ -3,10 +3,10 @@
 sudo raspi-config
 ```
 
-Go to "9 Advanced Options" and enable both:
+Go to "5 Interfacing Options  Configure connections to peripherals" and enable both:
 
-* "A5 SPI   automatic loading of SPI"
-* "A6 I2C   automatic loading of I2C"
+* "P4 SPI         Enable/Disable automatic loading of SPI kernel module"
+* "P5 I2C         Enable/Disable automatic loading of I2C kernel module"
 
 
 ```
