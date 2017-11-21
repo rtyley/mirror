@@ -72,39 +72,17 @@ def setPixelBothSides(n, cb):
 
 
 
-# p = select.poll()
-# dev = InputDevice('/dev/input/event0')
-
-# p.register(dev, select.POLLIN)
-
-
 def sweepTo(c):
   for n in range(numpixels):
     strip.setPixelColor(n, c)
     strip.show()
 
-def moo():
-	global lit
-
-
-#		addEnergy(num)
-#	degrade()
-	
-#	events = p.poll(0)
-#	if events:
-#        	data = list(dev.read())
-#		if filter(lambda e: e.type == ecodes.EV_KEY and e.value == 1, data):
-#			lit = not lit
-#			print lit
-#			sweepTo(color if lit else 0)
-
-
 sweepTo(color)
 lit = True
+currentlyInteracting = False
 interactionStartTime = None
 interactionStopTime = None
 previousInteractionNum = None
-interactionAge = None
 timeSinceInteractionStart = None
 timeSinceInteractionStop = None
 
@@ -115,14 +93,16 @@ while True:                              # Loop forever
 	t = time.time()
 
 	if num > 1 and num < (pixelLength):
-		if interactionStopTime is not None and t > interactionStopTime + 0.1:
+		if not currentlyInteracting:
 			interactionStartTime = t
 			interactionStopTime = None
+			currentlyInteracting = True
 #		print interactionAge
 		previousInteractionNum = num
 	else:
-		if interactionStopTime is None:
+		if currentlyInteracting:
 			interactionStopTime = t
+			currentlyInteracting = False
 
 	if interactionStartTime is not None:
 		timeSinceInteractionStart = t - interactionStartTime
